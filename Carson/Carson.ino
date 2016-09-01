@@ -18,6 +18,8 @@ TimerMgr* m_timer;
 
 ESP8266WebServer server(80);
 
+char MacAddress[24];
+
 void doMessage()
 {
   if(strcmp(server.arg(0).c_str(), "lock") == 0)
@@ -65,13 +67,13 @@ void InitCtrl()
 {
   uint8_t mac[6];
   WiFi.macAddress(mac);
-  char myMacString[24];
-  sprintf(myMacString, "%d.%d.%d.%d.%d.%d", mac[0], mac[1], mac[2], mac[3], mac[4], mac[4]);  
+  
+  sprintf(MacAddress, "%d.%d.%d.%d.%d.%d", mac[0], mac[1], mac[2], mac[3], mac[4], mac[4]);  
   
   StaticJsonBuffer<200> jsonBuffer;
   JsonObject& root = jsonBuffer.createObject();
   root["Type"] = "Init";
-  root["CtrlID"] = myMacString;
+  root["CtrlID"] = MacAddress;
 
   char myIpString[24];
   IPAddress myIp = WiFi.localIP();
@@ -131,6 +133,7 @@ void loop()
         StaticJsonBuffer<200> jsonBuffer;
         JsonObject& root = jsonBuffer.createObject();
         root["Type"] = "Auth";
+        root["CtrlID"] = MacAddress;
         root["ID"] = UserID.toInt();
 
         m_server->sendRequest(root, authCallback);
