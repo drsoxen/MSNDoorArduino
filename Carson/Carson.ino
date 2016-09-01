@@ -63,10 +63,15 @@ void setup()
 
 void InitCtrl()
 {
+  uint8_t mac[6];
+  WiFi.macAddress(mac);
+  char myMacString[24];
+  sprintf(myMacString, "%d.%d.%d.%d.%d.%d", mac[0], mac[1], mac[2], mac[3], mac[4], mac[4]);  
+  
   StaticJsonBuffer<200> jsonBuffer;
   JsonObject& root = jsonBuffer.createObject();
   root["Type"] = "Init";
-  root["CtrlID"] = 1;
+  root["CtrlID"] = myMacString;
 
   char myIpString[24];
   IPAddress myIp = WiFi.localIP();
